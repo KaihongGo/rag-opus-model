@@ -42,18 +42,23 @@ public class KnowledgeBaseConverter {
         try {
             List<Map<String, Object>> fieldDefList = new ArrayList<>();
             for (FieldDefinition fd : domain.getFieldDefinitionList()) {
-                Map<String, Object> fieldMap = Map.of(
-                        "fieldName", fd.getFieldName(),
-                        "indexType", fd.getIndexType().name(),
-                        "isFilter", fd.isFilter(),
-                        "required", fd.isRequired(),
-                        "description", fd.getDescription() != null ? fd.getDescription() : "",
-                        "embeddingConfig", fd.getEmbeddingConfig() != null ? Map.of(
-                                "modelId", fd.getEmbeddingConfig().getModelId(),
-                                "dimension", fd.getEmbeddingConfig().getDimension(),
-                                "similarity", fd.getEmbeddingConfig().getSimilarity()
-                        ) : null
-                );
+                Map<String, Object> fieldMap = new java.util.HashMap<>();
+                fieldMap.put("fieldName", fd.getFieldName());
+                fieldMap.put("indexType", fd.getIndexType().name());
+                fieldMap.put("isFilter", fd.isFilter());
+                fieldMap.put("required", fd.isRequired());
+                fieldMap.put("description", fd.getDescription() != null ? fd.getDescription() : "");
+                
+                if (fd.getEmbeddingConfig() != null) {
+                    Map<String, Object> embeddingMap = new java.util.HashMap<>();
+                    embeddingMap.put("modelId", fd.getEmbeddingConfig().getModelId());
+                    embeddingMap.put("dimension", fd.getEmbeddingConfig().getDimension());
+                    embeddingMap.put("similarity", fd.getEmbeddingConfig().getSimilarity());
+                    fieldMap.put("embeddingConfig", embeddingMap);
+                } else {
+                    fieldMap.put("embeddingConfig", null);
+                }
+                
                 fieldDefList.add(fieldMap);
             }
             entity.setFieldDefinitions(objectMapper.writeValueAsString(fieldDefList));

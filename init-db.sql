@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS knowledge_base (
     description TEXT,
     tenant_id VARCHAR(64) NOT NULL,
     status VARCHAR(32) NOT NULL DEFAULT 'CREATING',
-    field_definitions JSONB NOT NULL DEFAULT '[]',
+    field_definitions TEXT NOT NULL DEFAULT '[]',
     index_name VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,

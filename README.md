@@ -156,9 +156,12 @@ curl -X POST http://localhost:8080/api/v1/knowledge-bases \
 ### 4. 发送数据到 Kafka
 
 ```bash
-# 发送摄取消息
-echo '{
-  "knowledgeBaseId": "demo-kb-001",
+# 发送摄取消息 (替换 knowledgeBaseId 为你创建的知识库 ID)
+docker exec -i rag-kafka kafka-console-producer \
+  --bootstrap-server localhost:9092 \
+  --topic rag.ingestion.raw << 'EOF'
+{
+  "knowledgeBaseId": "143681c9-3ef4-4fb2-826e-2414de447517",
   "content": {
     "content": "This is the main content for vector search",
     "title": "Sample Document",
@@ -169,7 +172,8 @@ echo '{
     "author": "system"
   },
   "operation": "INDEX"
-}' | kafka-console-producer --broker-list localhost:9092 --topic rag.ingestion.raw
+}
+EOF
 ```
 
 ### 5. 执行检索
