@@ -1,0 +1,88 @@
+{
+  "index_patterns": ["rag_kb_*"],
+  "priority": 100,
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "analysis": {
+        "analyzer": {
+          "rag_analyzer": {
+            "type": "custom",
+            "tokenizer": "standard",
+            "filter": ["lowercase", "asciifolding", "snowball"]
+          },
+          "rag_cjk_analyzer": {
+            "type": "custom",
+            "tokenizer": "standard",
+            "filter": ["lowercase", "cjk_width", "cjk_bigram"]
+          }
+        }
+      }
+    },
+    "mappings": {
+      "dynamic": "true",
+      "dynamic_templates": [
+        {
+          "vectors": {
+            "match": "*_vector",
+            "mapping": {
+              "type": "dense_vector",
+              "dims": 1536,
+              "index": true,
+              "similarity": "cosine",
+              "index_options": {
+                "type": "hnsw",
+                "m": 16,
+                "ef_construction": 100
+              }
+            }
+          }
+        },
+        {
+          "strings_as_text": {
+            "match_mapping_type": "string",
+            "mapping": {
+              "type": "text",
+              "analyzer": "standard",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "_doc_id": {
+          "type": "keyword"
+        },
+        "_knowledge_base_id": {
+          "type": "keyword"
+        },
+        "_created_at": {
+          "type": "date"
+        },
+        "_updated_at": {
+          "type": "date"
+        },
+        "_source_document_id": {
+          "type": "keyword"
+        },
+        "_chunk_index": {
+          "type": "integer"
+        },
+        "_metadata": {
+          "type": "object",
+          "enabled": true
+        }
+      }
+    }
+  },
+  "_meta": {
+    "description": "RAG Platform Knowledge Base Index Template",
+    "version": "1.0.0"
+  }
+}
