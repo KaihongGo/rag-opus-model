@@ -73,7 +73,7 @@ public class VectorSearchStrategy implements SearchStrategy {
                 .numCandidates(numCandidates);
         
         if (similarity != null) {
-            knnBuilder.similarity(similarity.doubleValue());
+            knnBuilder.similarity(similarity);
         }
         
         return knnBuilder.build();
